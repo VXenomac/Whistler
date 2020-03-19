@@ -3,14 +3,13 @@ from configparser import ConfigParser
 
 
 class Whistler(object):
-    def __init__(self):
-        self.cp = ConfigParser()
-        self.cp.read('key.conf')
-        self.SERVER_CHAN_SCKEY = self.cp.get('KEY', 'SERVER_CHAN_SCKEY')
-        self.SERVER_CHAN_URL = self.cp.get(
-            'URL', 'SERVER_CHAN_URL') + self.SERVER_CHAN_SCKEY + '.send'
-        self.BARK_KEY = self.cp.get('KEY', 'BARK_KEY')
-        self.BARK_URL = self.cp.get('URL', 'BARK_URL') + self.BARK_KEY + '/'
+    def __init__(self, server_chan=None, bark=None):
+        if server_chan:
+            self.SERVER_CHAN_SCKEY = server_chan
+            self.SERVER_CHAN_URL = 'https://sc.ftqq.com/' + self.SERVER_CHAN_SCKEY + '.send'
+        if bark:
+            self.BARK_KEY = bark
+            self.BARK_URL = 'https://api.day.app/' + self.BARK_KEY + '/'
 
     def server_chan(self, text, desp=None):
         if self.SERVER_CHAN_SCKEY:
@@ -29,4 +28,8 @@ class Whistler(object):
 
 
 if __name__ == '__main__':
-    whistler = Whistler()
+    cp = ConfigParser()
+    cp.read('key.conf')
+    SERVER_CHAN_SCKEY = cp.get('KEY', 'SERVER_CHAN_SCKEY')
+    BARK_KEY = cp.get('KEY', 'BARK_KEY')
+    whistler = Whistler(SERVER_CHAN_SCKEY, BARK_KEY)
